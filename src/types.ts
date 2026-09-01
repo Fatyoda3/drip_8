@@ -1,0 +1,7 @@
+export type ValidCmd = "INTERPRETER" | "PROGRAM" | "INVALID";
+
+export enum VALID_CMD {
+  INTERPRETER = "INTERPRETER",
+  PROGRAM = "PROGRAM",
+  INVALID = "INVALID",
+}

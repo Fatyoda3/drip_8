@@ -1,8 +1,6 @@
 {
   "scripts": {
-    "run": "npx tsx main.ts",
-    "build": "esbuild src/index.ts --bundle --platform=node --outfile=main.js",
-    "watch": "esbuild src/index.ts --bundle --platform=node --outfile=main.js --watch",
+    "dev": "npx tsx main.ts",
     "check-types": "tsc --noEmit"
   },
   "devDependencies": {

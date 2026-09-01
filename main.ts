@@ -1,22 +1,45 @@
 import fs from "fs";
-// TODO (what-is-chip8): implement per the lesson description. --> DONE
+import { parseCmd } from "./src/parseCmd";
 
-type ValidCmd = "INTERPRETER" | "PROGRAM" | "INVALID";
+type Carry = 0 | 1;
 
-const isBetween = (low: number, cmd: number, high: number) =>
-  low <= cmd && cmd <= high;
+interface Byte {
+  readonly value: number;
+  readonly carry: Carry;
+  readonly add: (val: Byte) => Byte;
+}
 
-const parseCmd = (cmdLine: string): ValidCmd => {
-  enum VALID_CMD {
-    INTERPRETER = "INTERPRETER",
-    PROGRAM = "PROGRAM",
-    INVALID = "INVALID",
+const createByte = (integer: number): Byte => ({
+  value: integer % 256,
+  carry: integer > 255 ? 1 : 0,
+
+  add(vy) {
+    return createByte(this.value + vy.value);
+  },
+});
+
+type ADD = { vx: number; vy: number };
+
+const parseAddCmd = (line: string): ADD => {
+  const [vx, vy] = line.split(" ");
+  return { vx: Number(vx), vy: Number(vy) };
+};
+
+const t = (line: string) => {
+  const { vx, vy } = parseAddCmd(line);
+
+  if (
+    typeof vx !== "number" ||
+    typeof vy !== "number" ||
+    isNaN(vx) ||
+    isNaN(vy)
+  ) {
+    return parseCmd(line);
   }
 
-  const parsedValue = parseInt(cmdLine, 16);
-  if (isBetween(0x00, parsedValue, 0x1ff)) return VALID_CMD.INTERPRETER;
-  if (isBetween(0x200, parsedValue, 0xfff)) return VALID_CMD.PROGRAM;
-  return VALID_CMD.INVALID;
+  const val = createByte(vx).add(createByte(vy));
+
+  return `${val.value} ${val.carry}`;
 };
 
 const main = () => {
@@ -24,7 +47,7 @@ const main = () => {
 
   for (const line of lines) {
     if (line.trim() === "") continue;
-    const result: ValidCmd = parseCmd(line);
+    const result = t(line);
     console.log(result);
   }
 };
