@@ -1,45 +1,32 @@
 import fs from "fs";
 import { parseCmd } from "./src/parseCmd";
+import { Byte, ADD } from "./src/types";
 
-type Carry = 0 | 1;
-
-interface Byte {
-  readonly value: number;
-  readonly carry: Carry;
-  readonly add: (val: Byte) => Byte;
-}
+const MAX_BYTE_VALUE = 256;
 
 const createByte = (integer: number): Byte => ({
-  value: integer % 256,
-  carry: integer > 255 ? 1 : 0,
+  value: integer % MAX_BYTE_VALUE,
+  carry: integer > MAX_BYTE_VALUE - 1 ? 1 : 0,
 
   add(vy) {
     return createByte(this.value + vy.value);
   },
 });
 
-type ADD = { vx: number; vy: number };
-
 const parseAddCmd = (line: string): ADD => {
   const [vx, vy] = line.split(" ");
   return { vx: Number(vx), vy: Number(vy) };
 };
 
-const t = (line: string) => {
+const execute = (line: string) => {
   const { vx, vy } = parseAddCmd(line);
 
-  if (
-    typeof vx !== "number" ||
-    typeof vy !== "number" ||
-    isNaN(vx) ||
-    isNaN(vy)
-  ) {
-    return parseCmd(line);
+  if (Number.isInteger(vx) && Number.isInteger(vy)) {
+    const sum = createByte(vx).add(createByte(vy));
+    return `${sum.value} ${sum.carry}`;
   }
 
-  const val = createByte(vx).add(createByte(vy));
-
-  return `${val.value} ${val.carry}`;
+  return parseCmd(line);
 };
 
 const main = () => {
@@ -47,7 +34,7 @@ const main = () => {
 
   for (const line of lines) {
     if (line.trim() === "") continue;
-    const result = t(line);
+    const result = execute(line);
     console.log(result);
   }
 };
