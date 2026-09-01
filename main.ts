@@ -1,12 +1,32 @@
 import fs from "fs";
-
-const lines = fs.readFileSync(0, "utf8").split("\n");
 // TODO (what-is-chip8): implement per the lesson description.
-const isInterpreterCommand = (value: number) => {
-  return 0x000 >= value && value <= 0x1ff;
+
+type ValidCmd = "INTERPRETER" | "PROGRAM" | "INVALID";
+
+const isBetween = (low: number, cmd: number, high: number) =>
+  low <= cmd && cmd <= high;
+
+const parseCmd = (cmdLine: string): ValidCmd => {
+  enum VALID_CMD {
+    INTERPRETER = "INTERPRETER",
+    PROGRAM = "PROGRAM",
+    INVALID = "INVALID",
+  }
+
+  const parsedValue = parseInt(cmdLine, 16);
+  if (isBetween(0x00, parsedValue, 0x1ff)) return VALID_CMD.INTERPRETER;
+  if (isBetween(0x200, parsedValue, 0xfff)) return VALID_CMD.PROGRAM;
+  return VALID_CMD.INVALID;
 };
 
-for (const line of lines) {
-  if (!line) continue;
-  console.log("TODO");
-}
+const main = () => {
+  const lines = fs.readFileSync(0, "utf8").split("\n");
+
+  for (const line of lines) {
+    if (line.trim() === "") continue;
+    const result: ValidCmd = parseCmd(line);
+    console.log(result);
+  }
+};
+
+main();
