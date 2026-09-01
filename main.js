@@ -1,4 +1,4 @@
-import fs from "fs";
+const fs = require("fs");
 // TODO (what-is-chip8): implement per the lesson description. --> DONE
 
 // type ValidCmd = "INTERPRETER" | "PROGRAM" | "INVALID";
