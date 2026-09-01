@@ -1,7 +1,14 @@
 {
+  "scripts": {
+    "run": "npx tsx main.ts",
+    "build": "esbuild src/index.ts --bundle --platform=node --outfile=main.js",
+    "watch": "esbuild src/index.ts --bundle --platform=node --outfile=main.js --watch",
+    "check-types": "tsc --noEmit"
+  },
   "devDependencies": {
     "@types/node": "^26.4.0",
+    "esbuild": "^0.28.2",
     "typescript": "^7.0.2"
   },
-  "type": "module"
+  "type": "commonjs"
 }

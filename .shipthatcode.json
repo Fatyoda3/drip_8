@@ -1,8 +1,8 @@
 {
   "course": "build-chip8-emulator",
-  "language": "javascript",
+  "language": "typescript",
   "language_id": 63,
-  "entrypoint": "main.js",
+  "entrypoint": "main.ts",
   "version": 1,
   "content_hash": "c34ea6f6c60f5235",
   "lessons": [
